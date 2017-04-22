@@ -20,7 +20,6 @@ train.data  <- split_data(german.data, 1)
 test.data   <- split_data(german.data, 0)
 
 print(table(train.data$Creditability)) ## shows train.data is balance
-
 ###########################################################################
 #                  Machine Learning Algorithm                             #
 ###########################################################################

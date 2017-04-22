@@ -21,8 +21,8 @@ classifier <- function(train.data, test.data)
         logit.model <- glm(Creditability~., data = train.data, family = binomial(link = "logit"))
         result.frame <- rbind(result.frame, predict.auc("logistic.regrr", logit.model, test.data, 1))
         
-        neural.model <- neuralNetwork(train.data, test.data)
-        result.frame <- rbind(result.frame, neural.model)
+        # neural.model <- neuralNetwork(train.data, test.data)
+        # result.frame <- rbind(result.frame, neural.model)
         
         svm.model <- ksvm(as.factor(Creditability)~., data = train.data, scaled = TRUE, prob.model = T)
         result.frame <- rbind(result.frame, predict.auc("svm", svm.model, test.data, 3))
@@ -93,6 +93,8 @@ predict.auc <- function(model.name, model, test.data, algo.flag = 0)
           pred <- compute(model, test.data[,1:target.attr])
           pred <- as.factor(round(pred$net.result))
           
+          print(pred)
+          
         }else if(algo.flag == 3)
         {
           pred  <- predict(model, test.data)
@@ -103,7 +105,7 @@ predict.auc <- function(model.name, model, test.data, algo.flag = 0)
         {
           pred  <- predict(model, test.data, type = "class")
         }
-       print(model.name)
+        print(model.name)
         confMatrix <- confusionMatrix(test.data$Creditability, pred)
     
         TP <- confMatrix$table[[4]]
@@ -141,7 +143,7 @@ neuralNetwork  <- function(train.data, test.data)
      cName <- names(train.data)
      formula <- as.formula(paste("Creditability~", paste(cName[!cName %in% "Creditability"], collapse = " + ")))
      
-     neural.model <- neuralnet(formula, data = train.data, hidden = c(5, 3), linear.output = FALSE, stepmax = 100000000)
+     neural.model <- neuralnet(formula, data = train.data, hidden = c(5, 3), linear.output = FALSE, stepmax = 1000000)
      neural.metric <- predict.auc("neural.network",  neural.model, test.data, 2)
      
      return(neural.metric)

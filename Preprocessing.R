@@ -3,7 +3,7 @@
 # @param in.data A data_frame containing whole data set
 # @param type_data A binary flag 1 indicate train type, 0 indicate test_type
 #,
-# @return train.data/test.data depending type_data = 1/0 respectively
+# @return train.data/test.data depending type_data = 1/0 respectively, oversampling had done over train.data
 split_data <- function(in.data, type_data)
 {
       in.data    <- in.data[sample(nrow(in.data)), ]
@@ -14,6 +14,8 @@ split_data <- function(in.data, type_data)
       
       if(type_data == 1)
       {
+            print(train.data$Creditabilitys)
+            train.data <- ovun.sample(Creditability~.,  data = train.data, method = "over")$data
             return(train.data)
       }else
       {
@@ -43,6 +45,17 @@ cor.data <- function(in.data, target.variable)
       
       out.data      <- cbind(response.data, target.data)
       return(in.data)
+}
+#############################################################################################################################
+# Function to do over sampling on train data in order to make balanced data, i.e to make balance pos/neg class in train.data
+#,
+# @param train.data A data_frame containing train.data set
+#, 
+# @return over.sample.data A data_frame containing balanced train.data set
+balance.data <- function(train.data)
+{
+      over.sample.data <- ovun.sample(Creditability~.,  data = train.data, method = "over", N = 1114)$data
+      return(over.sample.data)
 }
 ############################ Missing value replacement with mean ###################################
 #,
